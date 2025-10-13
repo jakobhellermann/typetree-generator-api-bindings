@@ -73,7 +73,7 @@ impl std::error::Error for Error {}
 
 impl TypeTreeGenerator {
     pub fn new_lib_next_to_exe(
-        unity_version: UnityVersion,
+        unity_version: &UnityVersion,
         backend: GeneratorBackend,
     ) -> Result<TypeTreeGenerator> {
         let exe = std::env::current_exe()?;
@@ -87,7 +87,7 @@ impl TypeTreeGenerator {
 
     pub fn new_lib_in(
         library_dir: &Path,
-        unity_version: UnityVersion,
+        unity_version: &UnityVersion,
         backend: GeneratorBackend,
     ) -> Result<TypeTreeGenerator> {
         TypeTreeGenerator::new(
@@ -99,7 +99,7 @@ impl TypeTreeGenerator {
 
     pub fn new(
         library_path: &Path,
-        unity_version: UnityVersion,
+        unity_version: &UnityVersion,
         backend: GeneratorBackend,
     ) -> Result<TypeTreeGenerator> {
         if !library_path.exists() {
