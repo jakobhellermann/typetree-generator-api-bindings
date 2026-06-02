@@ -160,7 +160,7 @@ impl TypeTreeGenerator {
         let mut out = std::ptr::null_mut::<[*mut c_char; 2]>();
         let mut length: c_int = 0;
         let res = unsafe {
-            self.lib.TypeTreeGenerator_getMonoBehaviorDefinitions(
+            self.lib.TypeTreeGenerator_getMonoBehaviourDefinitions(
                 self.handle,
                 &raw mut out,
                 &mut length,
@@ -181,10 +181,23 @@ impl TypeTreeGenerator {
 
         let _ = unsafe {
             self.lib
-                .TypeTreeGenerator_freeMonoBehaviorDefinitions(out, length)
+                .TypeTreeGenerator_freeMonoBehaviourDefinitions(out, length)
         };
 
         Ok(all)
+    }
+
+    /// Toggle whether generated MonoBehaviour trees are prefixed with the
+    /// engine base nodes
+    ///
+    /// (`m_GameObject`, `m_Enabled`, `m_Script`, `m_Name`).
+    /// Default is enabled.
+    pub fn set_add_monobehaviour_root_nodes(&self, enabled: bool) -> Result<()> {
+        let res = unsafe {
+            self.lib
+                .TypeTreeGenerator_setAddMonoBehaviourRootNodes(enabled as u8)
+        };
+        Error::from_code(res)
     }
 
     pub fn generate_typetree_json(&self, assembly: &str, full_name: &str) -> Result<String> {

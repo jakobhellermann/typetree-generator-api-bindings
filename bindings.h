@@ -22,10 +22,12 @@ int TypeTreeGenerator_generateTreeNodesRaw(TypeTreeGeneratorHandle *handle, cons
                                            const char *full_name, struct TypeTreeNodeNative **arr_addr,
                                            int *arr_length);
 
-int TypeTreeGenerator_getMonoBehaviorDefinitions(TypeTreeGeneratorHandle *handle, char *(*(*arr_addr))[2],
-                                                 int *arr_length);
+int TypeTreeGenerator_getMonoBehaviourDefinitions(TypeTreeGeneratorHandle *handle, char *(*(*arr_addr))[2],
+                                                  int *arr_length);
 
-int TypeTreeGenerator_freeMonoBehaviorDefinitions(char *(*arr_addr)[2], int arr_length);
+int TypeTreeGenerator_freeMonoBehaviourDefinitions(char *(*arr_addr)[2], int arr_length);
+
+int TypeTreeGenerator_setAddMonoBehaviourRootNodes(u8 value);
 
 int TypeTreeGenerator_del(TypeTreeGeneratorHandle *handle);
 
