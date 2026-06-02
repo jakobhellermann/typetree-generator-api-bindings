@@ -49,6 +49,8 @@ impl From<std::str::Utf8Error> for Error {
         Error::UTF8(value)
     }
 }
+const NOT_FOUND: i32 = -2;
+
 impl Error {
     fn from_code(status_code: i32) -> Result<()> {
         if status_code == 0 {
@@ -242,6 +244,9 @@ impl TypeTreeGenerator {
                 &raw mut length,
             )
         };
+        if res == NOT_FOUND {
+            return Ok(None);
+        }
         Error::from_code(res)?;
 
         if array.is_null() {
