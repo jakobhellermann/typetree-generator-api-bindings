@@ -6,6 +6,7 @@ mod generated;
 use std::collections::{BTreeMap, HashMap};
 use std::ffi::{CStr, CString, c_char, c_int};
 use std::path::Path;
+use std::sync::OnceLock;
 
 use rabex::UnityVersion;
 use rabex::typetree::TypeTreeNode;
@@ -15,7 +16,18 @@ use generated::TypeTreeGeneratorHandle;
 
 pub struct TypeTreeGenerator {
     handle: *mut TypeTreeGeneratorHandle,
-    lib: TypeTreeGeneratorAPI,
+    lib: &'static TypeTreeGeneratorAPI,
+}
+
+// .NET NativeAOT doesnt work with repeated dlopen/dlclose.
+// Load and leak it once, then reuse it.
+fn load_library(path: &Path) -> Result<&'static TypeTreeGeneratorAPI> {
+    static LIB: OnceLock<TypeTreeGeneratorAPI> = OnceLock::new();
+    if let Some(lib) = LIB.get() {
+        return Ok(lib);
+    }
+    let lib = unsafe { TypeTreeGeneratorAPI::new(path).map_err(|e| Error::Lib(e.to_string()))? };
+    Ok(LIB.get_or_init(|| lib))
 }
 // The AssetsTools generator API seems to be thread safe
 unsafe impl Send for TypeTreeGenerator {}
@@ -110,9 +122,7 @@ impl TypeTreeGenerator {
                 library_path.display()
             )));
         }
-        let lib = unsafe {
-            TypeTreeGeneratorAPI::new(library_path).map_err(|e| Error::Lib(e.to_string()))?
-        };
+        let lib = load_library(library_path)?;
         let unity_version = CString::new(unity_version.to_string()).unwrap();
         let generator_name = match backend {
             GeneratorBackend::AssetStudio => c"AssetStudio",
