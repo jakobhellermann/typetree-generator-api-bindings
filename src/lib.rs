@@ -317,7 +317,7 @@ fn build_node_tree<S: AsRef<str>>(
     flat_nodes: &[(S, S, u8, i32)],
     children_map: &BTreeMap<usize, Vec<usize>>,
 ) -> TypeTreeNode {
-    let &(ref ty, ref name, level, flags) = &flat_nodes[index];
+    let &(ref ty, ref name, _level, flags) = &flat_nodes[index];
     let child_indices = children_map.get(&index);
 
     let children = match child_indices {
@@ -331,7 +331,6 @@ fn build_node_tree<S: AsRef<str>>(
     TypeTreeNode {
         m_Type: ty.as_ref().to_owned(),
         m_Name: name.as_ref().to_owned(),
-        m_Level: level,
         m_MetaFlag: Some(flags),
         children,
         ..Default::default()
