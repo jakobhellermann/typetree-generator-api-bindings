@@ -5,4 +5,4 @@ edition = "2024"
 
 [dependencies]
 libloading = "0.8"
-rabex = { git = "https://github.com/jakobhellermann/RustyAssetBundleEXtractor" }
+rabex = { version = "0.1" }
